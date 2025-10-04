@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SSC CGL Quiz (Mobile)</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f1724;color:#e6eef6;padding:14px;transition:background 0.3s,color 0.3s}
+    body.light{background:#f8fafc;color:#0f1724}
+    .app{max-width:760px;margin:0 auto}
+    h1{font-size:20px;margin:0;text-align:center;flex:1}
+    .card{background:#0b1220;border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(3,7,18,0.6);transition:background 0.3s}
+    body.light .card{background:#fff}
+    .question{font-size:16px;margin-bottom:12px}
+    .options{display:grid;gap:8px}
+    .opt{padding:10px;border-radius:10px;background:#071427;border:1px solid #1e293b;cursor:pointer;transition:background 0.3s}
+    body.light .opt{background:#f1f5f9;border-color:#cbd5e1}
+    .opt.correct{background:#14532d!important;color:#bbf7d0}
+    .opt.wrong{background:#7f1d1d!important;color:#fecaca}
+    .btn{margin-top:14px;padding:10px 12px;background:linear-gradient(90deg,#06b6d4,#3b82f6);color:#021028;border:none;border-radius:12px;font-weight:600;width:100%}
+    .result{text-align:center;font-size:18px;margin-top:14px}
+    .timerbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:bold}
+    .nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(30px,1fr));gap:4px;margin-top:10px}
+    .nav button{padding:6px;border-radius:6px;border:none;background:#1e293b;color:#e2e8f0;font-size:12px;cursor:pointer}
+    body.light .nav button{background:#e2e8f0;color:#1e293b}
+    .nav button.active{background:#06b6d4;color:#021028}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .modeBtn{padding:6px 10px;font-size:12px;border-radius:8px;border:none;cursor:pointer;background:#1e293b;color:#e2e8f0}
+    body.light .modeBtn{background:#e2e8f0;color:#1e293b}
+    .notify{background:#fde68a;color:#92400e;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+    .notify button{background:none;border:none;font-size:16px;cursor:pointer;color:inherit}
+    .opt.selected{
+      background: #6b7280 !important;
+      color: #fff;
+    }
+    .nav button.answered {
+      background: #16a34a !important;
+      color: #fff !important;
+      opacity: 1 !important;
+    }
+    .btn:active{
+      background: linear-gradient(90deg,#f59e0b,#d97706) !important;
+      color: #fff !important;
+      transform: scale(0.98);
+    }
+    .home-icon {
+      position: absolute;
+      /* left: 10px; */
+      align-items: center;
+      top: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <a href="index.html" class="home-icon">🏠</a>
+      <h1>SSC CGL/CHSL Static GK from SSC Adda247 </h1>
+      <button class="modeBtn" id="modeBtn">🌙 Night</button>
+    </div>
+    <div class="notify" id="notify">
+      <span>Developer Pranab Mahata, Modified Date: 04/10/2025</span>
+      <span>CA-Marathon-11sept-2025</span>
+      <span>Last Meter Reading: 695</span>
+      <button onclick="this.parentElement.remove()">✖</button>
+    </div>
+    <div class="card" id="quizCard">
+      <div class="timerbar">
+        <div id="timer">Time: 00:00</div>
+        <div id="status">Answered: 0 | Not: 100</div>
+      </div>
+      <div id="quiz"></div>
+      <div class="nav" id="nav"></div>
+      <button class="btn" id="submitBtn">Submit</button>
+      <div class="result" id="result"></div>
+    </div>
+  </div>  <script>
+    const questions = [
+      {q: "Who among the following recently launched the 'Suposhit Gram Panchayat' campaign?", 'options': ['Amit Shah', 'Lalan Singh', 'Narendra Modi', 'Draupadi Murmu'], 'answer': 2},
+      {q: 'The 18th Surya Kiran military exercise will be held between India and which country?', 'options': ['Maldives', 'Nepal', 'Srilanka', 'Bhutan'], 'answer': 1},
+      {q: 'Which of the following states has declared Ratha Saptami as its state festival?', 'options': ['Odisha', ' Andhra Pradesh', 'Gujarat', 'Haryana'], 'answer': 1},
+      {q: 'Punjab has become which state to provide 100 percent piped water supply to rural households?', 'options': ['Second', 'Third', 'Fourth', 'Fifth'], 'answer': 3},
+      {q: "In which state has Prime Minister Narendra Modi laid the foundation stone of India's first Ken-Betwa river linking project?", 'options': ['India', 'Mexico', 'China', 'Phillippines'], 'answer': 0},
+      {q: 'Atal Health Fair was organized at which of the following places?', 'options': [' Jaipur', 'Lucknow', ' Bhubaneshwar', 'Gandhinagar'], 'answer': 1},
+      {q: 'Manika Jain has been appointed as the Indian Ambassador to which of the following countries?', 'options': ['Moldova', 'America', 'England', 'Sweeden'], 'answer': 0},
+      {q: "On which of the following rivers has the construction of the world's largest dam been approved?", 'options': ['Ganga River', 'Nile River', ' Brahmaputra River', 'Sine River'], 'answer': 2},
+      {q: 'Bald Eagle has been declared as the national bird of which of the following countries?', 'options': ['Newzealand', 'France', 'America', 'England'], 'answer': 2},
+      {q: "The book titled 'Stumped' has been written by who among the following?", 'options': ['Mahendra Singh Dhoni', 'Anil Kumble', ' Syyed Kirmani', ' Kapil Dev'], 'answer': 2},
+      {q: 'Who among the following has recently won the title of the 11th edition of Pro Kabaddi League?', 'options': ['Puneri Paltan', 'Mumba', 'Haryana Steelers', 'Jaipur Pink Panthers'], 'answer': 2},
+      {q: "Who has launched a platform called 'SWAR' to overcome language barriers?", 'options': [' Andhra Pradesh', 'Gujarat', 'Odisha', ' Uttrakhand'], 'answer': 1},
+      {q: 'Who among the following has become the youngest woman to conquer the highest peaks of the seven continents?', 'options': [' Alka Tiwari', 'Madhu Sharma', ' Jyoti Sehrawat', 'Kamya Kartikeyan'], 'answer': 3},
+      {q: 'Which medal did Lakshya Sen win in the recently held first Kings Cup?', 'options': ['Gold Medal', ' Silver Medal', ' Bronze Medal', 'NOT'], 'answer': 2},
+      {q: "In which of the following states was India's first glass bridge over the sea inaugurated?", 'options': [' Andhra Pradesh', 'Tamilnadu', 'Maharashtra', ' Uttrakhand'], 'answer': 1},
+      {q: "Sevdalinka is a song belonging to which country which has been included in the UNESCO's National List of Intangible Cultural Heritage?", 'options': ['England', 'Canada', 'America', 'Bosnia'], 'answer': 3},
+      {q: "India's first Made-in-India surgical robot SSI Mantra has been installed in which state?", 'options': ['(a)Puducherry', '(b)Kerala', '(c)Andhra Pradesh', '(d) Maharashtra'], 'answer': 3},
+      {q: "Who is the only Indian included in the list of best actors of the21st century by 'The Independent’?", 'options': [' Amitabh Bachchan', ' Irfan Khan', ' Akshay Kumar', 'Shahrukh Khan'], 'answer': 1},
+      {q: "Which of the following countries has launched the prototype of the world's fastest train?", 'options': ['England', 'Japan', 'America', 'China'], 'answer': 3},
+      {q: 'Who has won the title of the recently held 78th Santosh Trophy tournament?', 'options': ['Puducherry', 'Kerala', ' Andhra Pradesh', '  West Bengal'], 'answer': 3},
+      {q: 'Which of the following ministries has declared 2025 as theyear of reforms?', 'options': ['Home Ministry', '  Defence Ministry', '  Ministry of Tourism', '  Education Ministry'], 'answer': 1},
+      {q: "Recently, a book called 'Jammu and Kashmir and Ladakh: Through the Ages' was released by whom?", 'options': ['  Rajnath Singh', ' Draupadi Murmu', ' Amit Shah', ' Manoj Sinha'], 'answer': 2},
+      {q: 'For the first time, a heavy communication satellite called Blue Bird of which country will be launched by Isro?', 'options': ['America', 'Japan', 'England', 'France'], 'answer': 0},
+      {q: ' Which has become the first Indian airline to launch in-flight Wi-Fi internet service on domestic flights?', 'options': ['Air India', 'Indigo', 'Spice Jet', 'Air Asia India'], 'answer': 0},
+      {q: 'Which of the following day will be celebrated as the first Lokpal Day?', 'options': ['4 January', '10 January', '16 January', '22 January'], 'answer': 2},
+      {q: 'In which state is the Kampad and the Chal beaches located which have been given prestigious blue flag certification?', 'options': ['Kerala', 'Karnataka', 'Goa', 'Tamilnadu'], 'answer': 0},
+      {q: "The book titled 'Parliament: Powers, Functions and Privileges' is written by whom?", 'options': ['Dr. KS Chauhan', ' Vanadana Pathak', 'Keshav Kumar', 'Rajiv Gauba'], 'answer': 0},
+      {q: 'On which of the following days was the first Indian Lokpal Day celebrated?', 'options': ['14 January', '15 January', '16 January', '17 January'], 'answer': 2},
+      {q: 'Charaideo Moidam is located in which state which has recently been officially given UNESCO heritage status?', 'options': ['Assam', 'Odisha', 'Mizoram', 'Chhattisgarh'], 'answer': 0},
+      {q: 'Who among the following was recently appointed as the Director General of Central Reserve Police Force(CRPF)?', 'options': ['Vitul Kumar', 'Sanjiv Mathur', 'Gyanendra Pratap Singh', 'Atul Nayar'], 'answer': 2},
+      {q: 'Who among the following will be the first Indian astronaut to visit the Internatioanl Space Station?', 'options': ['Shivani Verma', 'Kalpesh Tiwari', 'Shubhanshu Shukla', ' Mohit Raina'], 'answer': 2},
+      {q: ' Which has become the first Indian company to develop hydrogen transport pipe?', 'options': ['Adani Energy', ' Jindal Steel', ' Tata Steel', 'JSW'], 'answer': 2},
+      {q: ' Who among the following was awarded the Polly Umrigar Award?', 'options': ['  Jasprit Bumrah', ' Mohammad Shami', 'Yashasvi Jaiswal', 'Rohit Sharma'], 'answer': 0},
+      {q: 'In which state is Udhwa Lake located which has been included in the Ramsar list?', 'options': ['Jharkhand', 'Tamilnadu', 'Sikkim', 'Madhya Pradesh'], 'answer': 0},
+      {q: 'Which of the following states has become the first state to start a rural cricket league?', 'options': ['Kerala', 'Odisha', 'Bihar', 'Rajasthan'], 'answer': 2},
+      {q: 'Bindiya Rani is related to which sport who won gold medal in the 38th National Games?', 'options': ['Judo', 'Tennis', 'Weightlifting', ' Badminton'], 'answer': 2},
+      {q: "Who is honoured with BCCI's CK Nayudu Lifetime Achievement Award?", 'options': [' Sachin Tendulkar', 'MS Dhoni', '   Yuvraj Singh', ' Zaheer Khan'], 'answer': 0},
+      {q: "Which of the following countries has built the world's first 'Deep Sheep Radar’?", 'options': ['China', 'India', 'America', 'Russia'], 'answer': 0},
+      {q: "Which of the following countries has been ranked first in global travel for domestic flights according to the International Air Transport Association?", 'options': ['Singapore', 'India', 'Japan', 'France'], 'answer': 1}, 
+      {q: "Which of the following has become the first African country to eliminate onchocerciasis disease?", 'options': ['Kenya', 'Nigeria','Niger','Sudan'], 'answer': 2},
+      {q: "Who won the recently held ICC Under 19 Women's T20 World Cup?", 'options': ['South Africa', 'Australia', 'India', 'England'], 'answer': 2},
+      {q: "In which city was the train trial of India's first vertical liftup bridge called Pamban Bridge conducted?", 'options': ['Delhi', 'Kolkata', 'Rameshwaram', ' Mumbai'], 'answer': 2},
+      {q: 'Who among the following has been awarded the Grammy Award for Song of the Year?', 'options': ['Kendrick Lamar', '  Chandrika Tandon', 'Beyonce', ' Chappell Roan'], 'answer': 0},
+      {q: 'Who has won the title of the recently held World Pickleball 2025?', 'options': ['Pune United', 'Bengaluru Jawans', ' Delhi Riders', 'Patna Pirates'], 'answer': 1},
+      {q: 'Which country has been given the status of focus country in the World Book Fair 2025?', 'options': ['Russia', 'America', 'Japan', 'Israel'], 'answer': 0},
+      {q: " Who among the following has won the title of Men's Hockey League 2024-25?", 'options': ['Hyderabad Toofans', 'shranchi rarh bengal tiger', 'Odisha Warriors', 'Surma Hockey'], 'answer': 1},
+      {q: 'Which of the following will become the first country to criminalise AI tools that create sexual abuse images?', 'options': ['Russia', 'America', 'India', 'Britain'], 'answer': 3},
+      {q: '  Which of the following has become the first state to create a legal framework for the right to die with dignity?', 'options': ['Gujarat', 'Karnataka', 'Odisha', ' Punjab'], 'answer': 1},
+      {q: 'Guneri has been declared as the first biodiversity heritage site of which state?', 'options': ['Gujarat', 'Uttar Pradesh', 'Odisha', 'Punjab'], 'answer': 0},
+      {q: 'The military exercise named Tropex 25 was organised by which of the following?', 'options': ['Indian Air Force', 'Indian Navy', 'Border Security Force', 'Indian Coast Guard'], 'answer': 1},
+      {q: 'Which state has become the first state in the world to launch government services through WhatsApp?', 'options': [' Andhra Pradesh', 'Haryana', 'Odisha', ' Uttrakhand'], 'answer': 0},
+      {q: "In which of the following cities the world's largest global justice, love and peace summit will be organized?", 'options': ['New Delhi', 'Paris', ' Dubai', 'Newyork'], 'answer': 2},
+      {q: "In which of the following states will India's first white tiger breeding centre be established?", 'options': ['Odisha', 'Rajasthan', 'Madhya Pradesh', 'Karnataka'], 'answer': 2},
+      {q: "In which of the following states will India's first AI University be built?", 'options': ['Gujarat', 'Maharashtra', ' Uttrakhand', 'Karnataka'], 'answer': 1},
+      {q: 'Which state has recently been officially declared Naxal-free?', 'options': ['Jharkhand', 'Karnataka', 'Chhattisgarh', 'Madhya Pradesh'], 'answer': 1},
+      {q: "Which of the following countries has started the world's first clinical trial for Ebola vaccine?", 'options': ['Sudan', ' Angola', 'Uganda', 'Rawanda'], 'answer': 2},
+      {q: 'Who among the following has recently won the title of Mrs. World 2025?', 'options': ['Tshege Gelei', 'Candice Abraham', '  Anuradha Gupta', 'Julia Schnelle'], 'answer': 0},
+      {q: "Recently in which country it has been announced to keep men and transgender women out of women's sports?", 'options': ['America', 'Brazil', 'Saudi Arabia', 'Denmark'], 'answer': 0},
+      {q: "Who among the following has launched India's first Cancer Genome Atlas?", 'options': ['IIT Rurki', 'IIT Madras', 'IIT Indore', 'IIT Kanpur'], 'answer': 1},
+      {q: 'Recently Fort William located in Kolkata has been renamed as what?', 'options': ['  Vijay Durga', 'Shakti Durga', 'Ajeya Durga', 'Sangharsha Durga'], 'answer': 0},
+      {q: '  Who among the following has been awarded the Vishalakshi Award 2025?', 'options': ['Nitesh Chaudhary', 'Bhagyashree Patil', 'Sachin Yadav', '  Anupam Jain'], 'answer': 1},
+      {q: " Who among the following has been awarded the 'Prani Mitra' National Award, India's highest honour in the field ofanimal welfare?", 'options': ['People for Animals', 'Vantara', 'Animal Aid Unlimited', 'Karuna Society for Animals and Nature'], 'answer': 1},
+      {q: "Who recently unveiled the 'One Nation - One Port' initiative?", 'options': ['  Draupadi Murmu', 'Narendra Modi', ' Amit Shah', 'Sarbananda Sonowal'], 'answer': 3},
+      {q: 'Which of the following security forces has renamed its training centre after Chola prince Rajaditya?', 'options': ['CISF', 'CRPF', 'BSF', 'ITBP'], 'answer': 0},
+      {q: "Who among the following has won the title of the recently held third edition of SABA Women's Championship?", 'options': ['Nepal', 'India', 'Maldives', 'Srilanka'], 'answer': 1},
+      {q: 'Who among the following has been appointed as the new Chairman of SEBI?', 'options': ['Tuhin Kanta Pandey', 'Raghubir Singh', 'Abhishek Banarjee', 'Amrendra Verma'], 'answer': 0},
+      {q: 'In which of the following states launched the Shiksha Sanjeevani Bima Yojavan for school children?', 'options': ['Odisha', 'Madhya Pradesh', 'Rajasthan', 'Gujarat'], 'answer': 2},
+      {q: 'The book titled Heart Lamp has become the first Kannada book to be listed for the International Booker Prize, written by whom?', 'options': ['Krishnan Iyer', 'Vedangal Sami', ' Namita Reddy', 'Banu Mushtaq'], 'answer': 3},
+      {q: "Which country has been given the global Prince Michael Road Safety Award for increasing road safety standards?", 'options': ['(a) Japan', '(b)Switzerland', '(c)India', '(d)Denmark'], 'answer': 2},
+      {q: " Which of the following country's passport has been declared the most expensive?", 'options': ['America', 'England', 'Mexico', 'Australia'], 'answer': 2},
+      {q: " Whose autobiography is the recently launched book 'Diyasalai’?", 'options': ['Vivek Oberoi', 'Kailash Satyarthi', 'Narendra Modi', 'Sonia Gandhi'], 'answer': 1},
+      {q: 'Who among the following has won the title of recently held Ranji Trophy 2025?', 'options': ['Vidarbha', ' Mumbai', 'Kerala', 'Saurashtra'], 'answer': 0},
+      {q: "At which of the following places a Sufi festival named 'Jahan-e-Khusrao' 2025 was organized?", 'options': ['Lucknow', 'New Delhi', 'Kolkata', 'Hyderabad'], 'answer': 1},
+      {q: 'Who has won the Best Film award at the 97th Oscar Awards?', 'options': [' The Brutalist', 'Conclave', 'Anora', 'Emilia Perez'], 'answer': 2},
+      {q: 'Which of the following countries has recently declared English as its official language?', 'options': ['America', 'England', 'Germany', 'Ukraine'], 'answer': 0},
+      {q: 'Who among the following has become the first Indian to be selected under the Formula 1 Academy driver program?', 'options': ['Shubhanshi Yadav', 'Atiqa Mir', 'Puja Jain', 'Shivani Dagar'], 'answer': 1},
+      {q: 'Christian Stocker has recently been appointed as the Chancellor of which country?', 'options': ['Germany', 'Austria', 'Neetherlands', 'Italy'], 'answer': 1},
+      {q: 'Krishna Jaishankar has become which Indian woman to throw shot put for a distance of more than 16 meters?', 'options': ['First', 'Second', 'Third', 'Fourth'], 'answer': 0},
+      {q: 'Ron Draper was the oldest Test cricketer of which country who passed away recently?', 'options': ['Australia', 'South Africa', 'Newzealand', 'England'], 'answer': 1},
+      {q: 'Who among the following has become the first woman pilot of the Jaguar Squadron of the Indian Air Force?', 'options': [' Payal Sinha', '  Tanushka Sharma', ' Kanchan Verma', ' Atiqa Mir'], 'answer': 1},
+      {q: 'Recently, which state has launched the Chief Minister Single Women Self-Employment Scheme to empower women?', 'options': ['Tamilnadu', 'Gujarat', 'Odisha', " Uttrakhand"], 'answer': 3},
+      {q: "At which place has India's first World Peace Centre been established?", 'options': ['(a) Jaipur', '(b) Gurugram', '(c)Kolkata', '(d)Prayagraj'], 'answer': 1},
+      {q: 'Which of the following is the second private spacecraft to make a soft landing on the Moon?', 'options': ['Rock Devil', 'Blue Ghost', ' Moon Hunter', 'Moon Rider'], 'answer': 1},
+      {q: 'Who among the following has been nominated the Laureus World Comeback Award for the year 2025?', 'options': ['Virat Kohli', 'KL Rahul', 'Hardik Pandya', 'Rishabh Pant'], 'answer': 3},
+      {q: 'Which has become the first urban body to focus on climate budget?', 'options': ['AMC', 'MCD', ' JMC', 'CMC'], 'answer': 0},
+      {q: "In which of the following states, India's first AI-powered solar manufacturing line has been launched?", 'options': ['Maharashtra', 'Gujarat', 'Kerala', 'Karnataka'], 'answer': 1},
+      {q: "In which of the following states has the world's largest wildlife rescue, conservation and rehabilitation centre been established?", 'options': ['Madhya Pradesh', 'Odisha', 'Gujarat', 'Rajasthan'], 'answer': 2},
+      {q: "On which of the following days is International Women's Day celebrated?", 'options': ['7 March', '8 March', '9 March', '10 March'], 'answer': 1},
+      {q: "Which position has been given to India in the recently released 'Global Terrorism Index 2025’?", 'options': ['12 th', '13 th', '14 th', '15 th'], 'answer': 2},
+      {q: 'Who among the following has been awarded the AM Turing Award along with Andrew G. Barto?', 'options': ['Avi Wigderson', 'Robert M. Metcalfe', 'Jack Dongarra', 'Richard S. Sutton'], 'answer': 3},
+      {q: 'Who has been appointed as the first brand ambassador of Federal Bank?', 'options': ['Virat Kohli', ' Vidya Balan', 'Lovlina Borgohain', 'Nitesh Kumar'], 'answer': 1},
+      {q: "Who among the following has been awarded the 'Women Tourism of the Year Award’?", 'options': ['Sangita Kaushik', 'Diya Kumari', 'Namita Jain', 'Premlata Chauhan'], 'answer': 1},
+      {q: 'Recently the missile named ASTRA MK III has been renamed as what?', 'options': ['Sudarshan', ' Sarang', 'Gandiv', ' Indra'], 'answer': 2},
+      {q: "According to the 19th Wealth Report 2025, India has been ranked at what position among the world's largest global wealth centres?", 'options': ['First', 'Second', 'Third', 'Fourth'], 'answer': 3},
+      {q: "Who among the following has been awarded the Pritzker Prize 2025?", 'options': ['(a)David Chipperfield', '(b)Francis Carey', '(c)Wang Shu', '(d)Liu Jiakun'], 'answer': 3},
+      {q: 'The military exercise named Sea Dragon 2025 is being organized recently by which country?', 'options': ['Japan', 'America', 'France', 'China'], 'answer': 1},
+      {q: 'Who among the following has won the title of Cannes International Open Chess Championship?', 'options': ['Pranesh', 'P. Iniyan', 'Aradhya Garg', 'Kazibek Nodarbek'], 'answer': 1},
+      {q: "Where was India's first API, Green Hydrogen and 2G Ethanol plant established?", 'options': ['Rishikesh', 'New Delhi', 'Solan', ' Bhubaneshwar'], 'answer': 2},
+      {q: "In which of the following places Asia's largest literature festival 2025 is being organized?", 'options': [' Mumbai', 'New Delhi', 'Hyderabad', 'Chandigarh'], 'answer': 1},
+      {q: "Who has recently been awarded Barbados' highest civilian award 'Honorary Order of the Independence of Barbados’?", 'options': ['Narendra Modi', '.S. Jaishankar', 'Draupadi Murmu', 'Amit Shah'], 'answer': 0},
+      {q: "Who among the following has been appointed as the first women Law Secretary?", 'options': ['Swati Pal', 'Sanjana Desai', 'Anju Rathi Rana', 'Anjali Kashyap'], 'answer': 2},
+      {q: 'Who has won the title of recently held Championship Trophy 2025?', 'options': ['India', 'New Zealand', 'Australia', 'South Africa'], 'answer': 0},
+      {q: 'The military exercise named Khanjar – XII has been started between India and which country?', 'options': ['Maldives', 'Japan', 'Nepal', 'Kygyzstan'], 'answer': 3},
+      {q: 'In which state is Madhav National Park located which has been established as the 58th Tiger Reserve of India?', 'options': ['Rajasthan', 'Madhya Pradesh', 'Odisha', 'Uttar Pradesh'], 'answer': 1},
+      {q: 'Mark Carney has been appointed as the Prime Minister of which of the following countries?', 'options': ['Arjentina', 'Canada', 'Poland', 'Sweeden'], 'answer': 1},
+      {q: "Which of the following states' Electronic City will be named after Ratan Tata?", 'options': ['Abhinav Bhatnagar', 'Harshit Chauhan', 'Jayshree Vencatesan', ' Sandeep Mishra'], 'answer': 2},
+      {q: "Recently a military exercise called 'Freedom Shield' was started between America and which country?", 'options': ['Japan', 'South Korea', 'India', 'Phillippines'], 'answer': 1},
+      {q: 'After whom has the name of Bangalore City University been changed?', 'options': ['Dr. Manmohan Singh', 'Dr. Abdul Kalam Azad', 'Ratan Tata', 'Ustad Jakir Hussain'], 'answer': 0},
+      {q: 'What has been the name of Commonwealth Games Federation changed torecently?', 'options': ['Commonwealth Sport Union', 'Commonwealth Sport', 'Young Commonwealth Sport', 'Commonwealth Young Sport'], 'answer': 1},
+      {q: "Who among the following has been appointed as the brand ambassador of the innovative menstrual hygiene brand 'Narika’?", 'options': ['Saina Nehwal', 'PV Sindhu', 'Harmanpreet Kaur', ' Rashmika Mandana'], 'answer': 0},
+      {q: ' Who has become the first 2-wheeler EV manufacturer to get PLI incentives?', 'options': ['Ether', 'Honda', 'Bajaj', 'Ola Electric'], 'answer': 3},
+      {q: "Who among the following has launched India's first commercial space surveillance satellite 'Scott’?", 'options': ['Dhruva Space', 'Digantara', 'Skyroot', 'AgniKul Cosmos'], 'answer': 1},
+      {q: 'In which of the following states was the festival called Chapchur Kut celebrated?', 'options': ['Odisha', 'Mizoram', 'Uttar Pradesh', 'Haryana'], 'answer': 1},
+      {q: 'Recently, Prime Minister Narendra Modi has become which Indian to receive the highest honor of Mauritius?', 'options': ['First', 'Second', 'Third', 'Fourth'], 'answer': 0},
+      {q: 'In which state is the Kanger Valley National Park located, which has been included in the tentative list of UNESCO?', 'options': ['Odisha', 'Uttar Pradesh', 'Chhattisgarh', 'Rajasthan'], 'answer': 2},
+      {q: "According to the recently released SIPRI report, who has become the world's largest arms importing country?", 'options': ['India', 'Ukraine', 'Russia', 'China'], 'answer': 1},
+      {q: "In which state has the Chief Minister's Girl Child Prosperity Scheme been launched recently?", 'options': ['Odisha', 'Tripura', 'Uttar Pradesh', 'Haryana'], 'answer': 1},
+      {q: "In which of the following states 'Shashwat Mithila Mahotsav 2025' was organized?", 'options': ['Uttar Pradesh', 'Bihar', 'Gujarat', 'Jharkhand'], 'answer': 2},
+      {q: 'Which of the following has become the best airport in Asia?', 'options': ['Manohar Antarastriya hawai adda', 'Swami Vivekananda Antarastriya Hawai Adda', 'Gopinath Bordoloi Antarastriya Hawai Adda', 'Indira Gandhi Antarastriya Hawai Adda'], 'answer': 3},
+      {q: 'Who has been awarded the Best Film at the International Indian Film Academy Awards (IIFA) 2025?', 'options': ['Lapata Ladies', 'Bhul Bhulaiya 3', 'Kill', 'Animal'], 'answer': 0},
+      {q: 'Who has secured the first position in Khelo India Winter Games 2025?', 'options': ['Maharashtra', 'Indian Army', 'Uttar Pradesh', 'Maharashtra'], 'answer': 1},
+      {q: 'In which of the following country the G7 Foreign Ministers Meeting 2025 was held?', 'options': ['Canada', 'Italy', 'Australia', 'England'], 'answer': 0},
+      {q: 'Yamandu Orsi has been appointed as the President of which of the following countries?', 'options': ['Ireland', 'Uruguay', 'Poland', 'Denmark'], 'answer': 1},
+      {q: 'Which of the following is the second private spacecraft to make a soft landing on the Moon?', 'options': ['Rock Devil', 'Blue Ghost', ' Moon Hunter', 'Moon Rider'], 'answer': 1},
+      {q: "Who among the following has won the title of the recently held third edition of Women's Premier League (WPL)?", 'options': [' MI', ' DC', '  GG', 'RCB'], 'answer': 0},
+      {q: "Which of the following will launch a mission called PUNCH to study the Sun's outer atmosphere and solar winds?", 'options': ['ISRO', 'ROSCOSMOS', 'NASA', 'KASA'], 'answer': 2},
+      {q: "Hola Mohalla festival was celebrated in which of the following states?", 'options': ['(a)Haryana', '(b) Rajasthan', '(c)  Punjab', '(d) Gujarat'], 'answer': 2},
+      {q: "Who has won the title of the recently held 15th India Senior Women's National Championship 2025?", 'options': ['Maharashtra', 'Jharkhand', 'Uttar Pradesh', 'Maharashtra'], 'answer': 1},
+      {q: "Who among the following has become Asia's richest businesswoman?", 'options': ['(a)Falguni Nayar', '(b)Kiran Mazumdar-Shaw', '(c)  Ataambani', '(d) Roshni Nadar'], 'answer': 3},
+      {q: 'In which state has the Chief Minister Kanya Atmanirbhar Yojana been launched recently?', 'options': ['Bihar', ' Tripura', 'MadhyaPradesh', 'Chhattisgarh'], 'answer': 1},
+      {q: 'Which of the following has become the first assembly in India to launch its own searchable engine?', 'options': ['Haryana', 'Maharashtra', ' Punjab', 'Rajasthan'], 'answer': 2},
+      {q: "Who among the following has launched India's largest energy literacy campaign?", 'options': ['Central Government', ' Tata Power', ' Rajasthan Government', '  Reliance Industries'], 'answer': 1},
+      {q: 'In which of the following states is Gangaur festival being organized?', 'options': ['Rajasthan', 'Odisha', 'Uttar Pradesh', 'Maharashtra'], 'answer': 0},
+      {q: 'Who among the following has been given the best Hockey male player award?', 'options': [' Hardik Singh', '  Harmanpreet Singh', '  Araijeet Singh Hundal', ' Amit Rohidas'], 'answer': 1},
+      {q: 'With which space agency has NASA launched a manned mission to bring back passengers stranded on the space station?', 'options': ['ISRO', 'JAXA', 'SpaceX', "ESA"], 'answer': 2},
+      {q: "Which of the following will develop the world's longest 'Hyperless Tube'?", 'options': ['(a) IIT Madras', '(b)IIT Rurki', '(c) IIT Kanpur', '(d)IIT Bombay'], 'answer': 0},
+      {q: 'Which state has recently increased the reservation of Other Backward Classes (OBC) from 23% to 42%?', 'options': ['Haryana', 'Maharashtra', 'Telangana', 'Rajasthan'], 'answer': 2},
+      {q: 'In which of the following states was the Attukal Pongal festival celebrated?', 'options': ['Kerala', 'Odisha', 'Tamilnadu', ' Andhra Pradesh'], 'answer': 0},
+      {q: 'In which of the following countries the Asian Gaming Conference was organised?', 'options': ['India', 'Philippines', 'China', 'Japan'], 'answer': 1},
+      {q: 'At which of the following places the Quad Workshop on Pandemic Preparedness was inaugurated?', 'options': ['New Delhi', 'Chennai', ' Kanpur', ' Mumbai'], 'answer': 0},
+      {q: 'Chandrayaan 5 mission will be launched with whose cooperation which was approved recently?', 'options': ['France', 'Russia', 'Japan', 'Italy'], 'answer': 2},
+      {q: " Which of the following has become India's first private reinsurance company?", 'options': ['Bajaj Allianz Life Insurance', 'Aegon Life Insurance', 'Max Life Insurance', 'Valueattics Reinsurance'], 'answer': 3},
+      {q: "The 10th Raisina Dialogue was held at which of the following places?", 'options': ['(a)  Mumbai', '(b)  Ranchi', '(c)New Delhi', '(d)Bhopal'], 'answer': 2},
+      {q: "India's first comprehensive river dolphin survey has estimated the presence of how many dolphins across the country?", 'options': ['6100', '6195', '6277', '6327'], 'answer': 3},
+      {q: "At which of the following places the first Chhatrapati Shivaji Maharaj temple has been inaugurated?", 'options': ['(a)New Delhi', '(b)Thane', '(c)Mumbai', '(d)Aurangabad'], 'answer': 1},
+      {q: "The recently launched book titled 'Memories and Milestones' is written by whom?", 'options': ['M. Manoj Sharma', 'Tushar Kapur', 'V. Sriram', 'Ashok Mehta'], 'answer': 2},
+      {q: "At which of the following places India's first Public-Private Partnership (PPP) Green Waste Processing Plant will be started?", 'options': [' Indore', 'New Delhi', ' Kanpur', 'Nasik'], 'answer': 0},
+      {q: "The 23rd Varuna military exercise was started between India and which country?", 'options': ['(a)France', '(b) Japan', '(c) England', '(d) Srilanka'], 'answer': 0},
+      {q: 'In which of the following countries the Kabaddi World Cup 2025 was inaugurated?', 'options': ['India', 'Nepal', 'England', 'South Korea'], 'answer': 2},
+      {q: 'Which position has been given to India in the recently released Free Speech Index?', 'options': ['20', '22', '24', '26'], 'answer': 2},
+      {q: 'Who has become the oldest player to debut in international cricket history?', 'options': ['Matthew Brownlee', ' Sally Barton', 'James Southner', 'Usman Goker'], 'answer': 0},
+      {q: 'Which of the following sports has been announced to be included in the 2028 Los Angeles Olympic Games?', 'options': ['Archery', 'Javeline Throw', 'Wrestling', 'Boxing'], 'answer': 3},
+      {q: "Which of the following has become the first metro rail corporation to launch urban cargo services?", 'options': ['(a)Mumbai Metro', '(b) Jaipur Metro', '(c) Bengaluru Metro', '(d) Delhi Metro'], 'answer': 3},
+      {q: 'Who has been chosen as the Fit India Icon in the Fit India Carnival?', 'options': ['Virat Kohli', 'Akshay Kumar', 'Ayushman Khurana', 'Vinesh Phogat'], 'answer': 2},
+      {q: 'What position has been given to India in the recently released World Happiness Index 2025?', 'options': ['52', '118', '68', '126'], 'answer': 1},
+      {q: 'In which of the following states, India\'s first industry-led digital detox initiative "Beyond Screen" has been launched?', 'options': ['Uttar Pradesh', 'Odisha', 'Karnataka', "Assam"], 'answer': 2},
+      {q: "The recently launched book 'Leo - The Untold Story' is written by whom?", 'options': ['(a)Keshav Sharma', '(b) Sunita Jain', '(c)Amit Tiwari', '(d)PS Raman'], 'answer': 3},
+      {q: 'Which of the following has become the best airport in Asia?', 'options': ['Manohar Antarastriya Hawai Adda', 'Swami Vivekananda Antarastriya Hawai Adda', 'Gopinath Bordolai Antarastriya Hawai Adda', 'Indira Gandhi Antarastrikya Hawai Adda'], 'answer': 3},
+      {q: 'Who has been awarded the Best Film at the International Indian Film Academy Awards (IIFA) 2025?', 'options': [' Lapata Ladies', 'Bhul Bhulaiya 3', 'Kill', 'Animal'], 'answer': 0},
+      {q: 'In which country will the headquarters of the International Bit Cat Alliance established?', 'options': ['India', 'Somalia', ' Tanjania', 'Kenya'], 'answer': 0},
+      {q: 'What position has India got in the 6th Asian Athletics Championship 2025 held in Saudi Arabia?', 'options': ['Fourth', ' Fifth', 'Sixth', 'Seventh'], 'answer': 2},
+      {q: "Who among the following has been appointed as the Director General of the Indian Council of Agriculture Research(ICAR)?", 'options': ['Mohit Chauhan', 'Rakesh Meena', 'Karuna Srivastava', 'Dr. Mangi Lal Jat'], 'answer': 3},
+      {q: 'Who has discovered Host protein to fight germs that harm the human body?', 'options': [' IIT Mumbai', 'IIT Kanpur', 'IIT Rurki', 'IIT Madras'], 'answer': 0},
+      {q: 'Who among the following has been appointed as the brand ambassador of French luxury brand CHANEL?', 'options': ['  Ananya Pandey', 'Virat Kohli', 'Smriti Mandhana', ' Akshay Kumar'], 'answer': 0},
+      {q: 'Which medal has Neeraj Chopra won in the recently held Potchefstroom Invitational Tournament?', 'options': ['Gold Medal', ' Silver Medal', ' Bronze Medal', 'NOT'], 'answer': 0},
+      {q: "In which state is India's longest railway tunnel constructed?", 'options': ['Jharkhand', ' Uttrakhand', 'Odisha', 'Tamilnadu'], 'answer': 1},
+      {q: "The recently launched book 'The Chief Minister and the Spy' is written by whom amongthe following?", 'options': ['Tejbahadur Singh', 'Rohanpreet Singh', 'Ashok Chavhan', 'Amarjeet Singh Duladt'], 'answer': 3},
+      {q: "By which year will India become the fastest growing major aviation market?", 'options': ['(a) 2026', '(b) 2027', '(c)2028', '(d)2029'], 'answer': 0},
+      {q: 'Recently with which country India has signed a defence agreement for the first time?', 'options': ['Poland', 'Turkmenista', 'Slovakia', 'Denmark'], 'answer': 2},
+      {q: 'National Civil Services Day is observed on which of the following days?', 'options': ['19 April', '20 April', '21 April', '22 April'], 'answer': 2},
+      {q: 'ISRO will join hands with which space agency to launch its first major collaborative Earth science mission called ‘NISAR’ in June 2025?', 'options': ['NASA', 'JAXA', 'ROSCOSMOS', 'ESA'], 'answer': 0},
+      {q: "Who among the following has been appointed as the chairman of the 23rd Law Commission?", 'options': ['Virendra Tyagi', 'Sudarshan Patnaik', 'Dinesh Maheswari', 'Ajoy Rastogi'], 'answer': 2},
+      {q: 'Which has become the first Indian state to implement the three-language policy?', 'options': ['Kerala', 'Gujarat', 'Uttar Pradesh', 'Maharashtra'], 'answer': 3},
+      {q: "The world's 17th Athlete Passport Management Unit has been established in which of the following countries?", 'options': ['France', 'Japan', 'Poland', 'India'], 'answer': 3},
+      {q: 'The United Nations Chinese Language Day is observed on which of the following days?', 'options': ['20 April', '21 April', '22 April', '23 April'], 'answer': 0},
+      {q: 'Biju Patnaik was the former Chief Minister of which state whose 28th death anniversary was celebrated recently?', 'options': ['Odisha', 'Gujarat', 'Haryana', 'Jharkhand'], 'answer': 0},
+      {q: 'Which state has become the first state in India to launch online permanent Lok Adalat service?', 'options': ['Uttar Pradesh', 'Kerala', 'Odisha', 'Gujarat'], 'answer': 1},
+      {q: "Where was South East Asia's largest pilot training institute inaugurated?", 'options': ['New Delhi', 'Amravati', ' Bhubaneshwar', 'Chennai'], 'answer': 1},
+      {q: 'Which US state has declared April 14 as Dr. B.R. Ambedkar Day?', 'options': ['Hawaii', 'Pennsylvania', 'Texas', 'Newyork'], 'answer': 3},
+      {q: "India's first creative tech institute Indian Institute of Creative Technology will be started at which place?", 'options': [' Bhubaneshwar', ' Mumbai', 'Hisar', "Bengaluru"], 'answer': 1},
+      {q: "Who has won the title of the recently held FIDE Women's World Championship 2025?",'options': ['(a)Tan Zhongyi', '(b)Aleksandra Goryachkina', '(c) Ju Wenjun', '(d) Kateryna Lagno'], 'answer': 2},
+      {q: "Which hospital has been declared the best hospital in India by Newsweek and Statista?", 'options': ['(a)  Christian Medical College Vellore', '(b) AIIMS Delhi', '(c)  Apollo Hospitals', '(d)  Medanta Hospital'], 'answer': 1},
+      {q: "Who among others has been included along with Natyashastra in UNESCO's Memory of the World Register held in Paris?", 'options': ['(a) Srimad Bhagavad Geeta', '(b)Ramayana', '(c) Chanakya Neeti', '(d) Garud Purana'], 'answer': 0},
+      {q: "Amaravati is the planned capital of which state that will become the world's first city to be completely run on renewable energy?", 'options': ['Andhra Pradesh','Maharashtra','Odisha','Jharkhand'], 'answer': 0},
+      {q: 'Who among the following has been appointed as the Vice President of Asian Infrastructure Investment Bank (AIIB)?', 'options': [' Kim Xiang', 'Rohit Tyagi', 'Ajay Bhushan Prasad Pandey', "Atul Garg"], 'answer': 2}, 
+      {q: "The book titled 'Panchva Adhyay of Culture' is a compilation of the speeches of whom of the following which was launched recently?", 'options': ['(a)Atal Bihari Vajpeyi', '(b)Jawaharlal Nehru', '(c)Lal Bahadur Shastri', '(d)Narendra Modi'], 'answer': 3},
+      {q: "Pope Francis died at the age of 88. He was the religious leader of which religion?",'options':['(a)Christian', '(b)Jewish', '(c) Zoroastrianism', '(d) Buddhism'], 'answer': 0},
+      {q: "India's first semi-automated trans shipment port called Vizhinjam International Port will be inaugurated in which state?", 'options': ['Kerala', 'Maharashtra', 'Tamilnadu', 'Andhra Pradesh'], 'answer': 0},
+      {q: "In which country is the multinational military exercise named Desert Flag – 10 being organized?",'options':['UAE','India','America','Japan'], 'answer': 0},
+      {q: 'Sansad Khel Maha Kumbh has been organized in which of the following cities?', 'options': [' Ranchi', 'Lucknow', 'Rishikesh', 'Chennai'], 'answer': 1},
+      {q: "India's first prototype fast-breeder reactor will be commissioned in which of the following states?", 'options': ['Maharashtra', 'Gujarat', 'Uttar Pradesh', 'Tamilnadu'], 'answer': 3},
+      {q: ' Who among the following has won the World Press Photo of the Year Award 2025?', 'options': [' Samar Abu Elouf', 'Mahmoud Ajjour', ' Nandkishor Rawat', 'Tim David'], 'answer': 0},
+      {q: ' Duro Macut has been appointed as the new Prime Minister of which of the following countries?', 'options': ['Poland', 'Canada', 'Serbia', 'Denmark'], 'answer': 2},
+      {q: ' World Earth Day is celebrated on which of the following days?', 'options': ['20 April', '21 April', '22 April', '23 April'], 'answer': 2},
+      {q: 'Khongjom Day is celebrated to pay tribute to the martyrs of which of the following famous wars?', 'options': ['Anglo – Maisore', 'Anglo – Maratha', 'Anglo – Sikhism', 'Anglo – Manipuri'], 'answer': 3},
+      {q: 'International Buddhist Conference was organized in which of the following states?', 'options': ['Sikkim', 'Assam', 'Arunachal Pradesh', 'Nagaland'], 'answer': 2},
+      {q: "India's largest international cruise terminal was launched at which of the following places?", 'options': [' Kandla', 'Kochi', 'Vishakhapattnam', ' Mumbai'], 'answer': 3},
+      {q: 'Fire Safety Week 2025 is being observed from 21st April on ____.', 'options': ['25 April', '26 April', '27 April', '28 April'], 'answer': 0},
+      {q: 'Who among the following has won the title of Saudi Arabian Grand Prix 2025?', 'options': ['Oscar Piastri', 'Lando Norris', 'Max Verstappan', 'Lewis Hamilton'], 'answer': 0},
+      {q: 'Who has been recently appointed as the Deputy Governor of the Reserve Bank of India?', 'options': ['T. Rabi Sankar', 'Ashok Mehta', 'Jagdeep Dhankar', 'Sarvesh Chaudhary'], 'answer': 0},
+      {q: " Who among the following players has won the Wisden Men's Cricketer of the Year award?", 'options': ['Steve Smith', 'Jasprit Bumrah', 'Virat Kohli', 'Travis Head'], 'answer': 1},
+      {q: 'In which of the following states the Pink E\ufffeRickshaw Scheme has been launched?', 'options': ['Maharashtra', 'Gujarat', 'Uttar Pradesh', 'Tamilnadu'], 'answer': 0},
+      {q: "Who has won the men's category award at the 2025 Laureus World Sports Awards?", 'options': ['Armand Duplantis', 'Jaspreet Bumrah', 'Carlos Alkraz', 'Arshdeep Singh'], 'answer': 0},
+      {q: 'Who was recently honored with Gurudev Kalicharan Brahma Award 2025?', 'options': ['Vaibhav Mishra', 'Ravi Arora', 'Achyuta Samanta', 'Devdutt Sharma'], 'answer': 2},
+      {q: 'On which of the following days is National Panchayati Raj Day celebrated?', 'options': ['22 April', '23 April', '24 April', '25 April'], 'answer': 2},
+      {q: 'Dr Mathew Samuel Kalarikal passed away at the age of 77. Who was he?', 'options': ['Geologist', ' Astronauts', 'Cardiologist', 'Scientist'], 'answer': 2},
+      {q: 'Which of the following Indians will be honored at the Gold House Gala 2025?', 'options': ['Deepika Padukone', 'Akshay Kumar', 'Ranveer Singh', 'Priyanka Chopra'], 'answer': 3},
+      {q: 'Garia and Borsho Boron festivals were celebrated in which of the following states?', 'options': ['Tripura', 'Uttar Pradesh', 'Uttrakhand', 'Tamilnadu'], 'answer': 0},
+      {q: " Recently, in which state has the 'Suryakiran' aerobatic show been organized for the first time?", 'options': ['Karnataka', 'Maharashtra', 'Punjab', 'Bihar'], 'answer': 3},
+      {q: '  Aerobics Gymnastics World Cup has been started in which of the following country?', 'options': ['India', 'America', 'Japan', 'England'], 'answer': 2},
+      {q: ' ? Where was the 38th meeting of the Central Archaeological Advisory Board (CABA) held?', 'options': ['Surat', 'Dispur', 'New Delhi', 'Mumbai'], 'answer': 2},
+      {q: '    । World Immunization Week 2025 is being organized from 24 April on ____.', 'options': ['27 April', '28 April', '29 April', '30 April'], 'answer': 3},
+      {q: "    The world's first Thorium Molten Salt Nuclear Reactor has been commissioned in which of the following countries?", 'options': ['China', 'America', 'Japan', 'South Korea'], 'answer': 0},
+      {q: ' (CIFEJ)     Who has been recently appointed as the President of the International Centre of Films for Children and Young People (CIFEJ)?', 'options': ['Jitendra Mishra', 'Raghuveer Jain', 'Nishant Mehta', "T. Rabi Sankar"], 'answer': 0},
+      {q: "In which state will India's first quantum computing village be established?",'options': ['Karnataka','Andhra Pradesh','Odisha','Uttar Pradesh'], 'answer': 1},
+      {q: '  India has suspended the SAARC visa exemption for citizens of which country?', 'options': ['Pakistan', ' Bangladesh', 'Turkiye', 'Azerbaijan'], 'answer': 0},
+      {q: '   Who among the following has been appointed as the interim President of the World Economic Forum (WEF)?', 'options': ['Peter Brabeck-Letmathe', 'Klaus Schwab', 'Mohit Jain', 'Arshdeep Singh'], 'answer': 0},
+      {q: "SEFCO 2025 International Conference was held in which of the following cities?", 'options': ['(a)New Delhi', '(b)Rishikesh', '(c)Dehradune', '(d)Chennai'], 'answer': 2},
+      {q: ' On which of the following days is World Malaria Day celebrated?', 'options': ['23 April', '24 April', '25 April', '26 April'], 'answer': 2},
+      {q: "Who has won the title of the recently held Pune FIDE Women's Grand Prix?", 'options': ['Zhu Jiner', 'Nurgyul Salimova', 'Koneru Humpy', 'Polina Shuvalova'], 'answer': 2},
+      {q: 'How many new global geoparks have recently been added to the Global Geopark Network by UNESCO?', 'options': ['10', '12', '14', '16'], 'answer': 3},
+      {q: "Where has South India's first AC EMU train been launched?", 'options': ['Chennai', 'Bengaluru', 'Hyderabad', 'Warangle'], 'answer': 0},
+      {q: "Which is the most expensive city in the world, according to the 'New World Wealth Report' released by Henley & Partners?", 'options': ['Paris', 'Tel Aviv', 'Berlin', 'Monaco'], 'answer': 3},
+      {q: 'The 11th edition of the military exercise named Talisman Sabre 2025 will be held in which of the following countries?', 'options': ['Australia', 'India', 'America', 'Japan'], 'answer': 0},
+      {q: "Lata Deenanath Mangeshkar Award 2025 was given to who among the following?", 'options': ['(a)Neha Kakkar','(b)Gautam Adani','(c)Anant Ambani','(d)Kumar Mangalam Birla'], 'answer': 3},
+      {q: 'Similipal has been officially given the status of a national park. Which national park of India has it become?', 'options': ['107 th', '108 th', '109 th', '110 th'], 'answer': 0},
+      {q: "Who among the following has appointed as the first Indian brand ambassador of Dream Technology?",'options': ['(a)Akshay Kumar', '(b)Yashasvi Jaiswal', '(c)Kriti Senon','(d) Harmanpreet Kaur'], 'answer': 2},
+      {q: 'In which stateunion territory has the Ayushman Vaya Vandana Yojana been launched recently?', 'options': ['Telangana', 'Odisha', 'Ladakh', 'Delhi'], 'answer': 3},
+      {q: 'Who among the following has been appointed the head of the International Charter for Space and Major Disasters?', 'options': ['America', 'India', 'Japan', 'France'], 'answer': 1},
+      {q: "Who has recently been awarded Fiji's highest civilian award 'Companion of the Orderof Fiji’?", 'options': ['Shiv Nadar', 'Abhinav Mehra', 'Rajiv Mishra', 'Madhusudan Sai'], 'answer': 3},
+      {q: "Srilakshmi PV has been appointed as the first female dog handler in which security force?", 'options': ['(a)BSF ','(b)Assam Rifles','(c) CRPF ','(d)Delhi Police'], 'answer': 1},
+      {q: "India's first floating pier will be built at which of the following places?", 'options': ['Ayodhya', 'Rameshwaram', 'Somnath', 'Haridwar'], 'answer': 0},
+      {q: 'Sudirman Cup Badminton Tournament 2025 is being organized in which of the following countries?', 'options': ['China', 'India', 'America', 'Japan'], 'answer': 0},
+      {q: 'Which airport has become the first airport in Asia to receive Level5 carbon accreditation?', 'options': ['Sardar Vallabhbhai Patel International Airport', 'Tirupati International Airport', 'Kempegowda International Airport', 'Lokpriya Gopinath Bordoloi International Airport'], 'answer': 2},
+      {q: ' Who has become the first Indian woman to swim across the North Channel?', 'options': [' Ankita Soni', ' Sayani Das', 'Aparna Das', 'Vrinda Mishra'], 'answer': 1},
+      {q: 'Who has become the youngest batsman to score a century in the Indian Premier League (IPL)?', 'options': [' Paras Mhatre', 'Prayas Ray Barman', 'Vaibhav Suryavanshi', 'Swastik Chikara'], 'answer': 2},
+      {q: ' Mark Carney has recently been appointed the new Prime Minister in which country?', 'options': ['France', 'Australia', 'Canada', 'Sweeden'], 'answer': 2},
+      {q: 'Recently the Green Hydrogen Certification Scheme has been launched by whom?', 'options': ['Narendra Modi', ' Amit Shah', ' Pralhad Joshi', 'Annpurna Devi'], 'answer': 2},
+      {q: 'Who among the following has been appointed as the Vice Chief of the Indian Air Force?', 'options': [' Subhash Yadav', 'Narmadeshwar Tiwari', 'Suchindra Kumar', ' Pratik Sharma'], 'answer': 1},
+      {q: "Who among the following has been selected to develop India's first large language model?", 'options': ['Open AI', 'Sarvam AI', 'Gemini', 'Grok'], 'answer': 1},
+      {q: '   Kamla Prasad Bissessar has been appointed as the new Prime Minister of which of the following countries?', 'options': ['West Indies', 'Guyana', 'Trinidad and Tobago', 'Peru'], 'answer': 2},
+      {q: "Which state has become the first state to monitor illegal felling and encroachment of forests through AI-based real-time forest alert system?", 'options': ['(a) Madhya Pradesh', '(b) Rajasthan', '(c) Odisha', '(d)Kerala'], 'answer': 0},
+      {q: "In which of the following cities will the world's largest entertainment conference be organized?", 'options': ['Bhopal', ' Mumbai', 'Delhi', ' Chandigarh'], 'answer': 1},
+      {q: 'Asian Games 2026 will be organized in which of the following countries?', 'options': ['India', 'Singapore', 'Japan', 'Thailand'], 'answer': 2},
+      {q: 'Who among others along with Satwiksairaj Rankireddy was awarded the Major Dhyan Chand Khel Ratna Award 2023?', 'options': ['Manu Bhakar', ' Neeraj Chopra', 'Chirag Shetty', 'Mirabai Chanu'], 'answer': 2},
+      {q: 'Who has been appointed as the first woman flying instructor of the Indian Navy?', 'options': [' णAnkita Rana', '  Manisha Pandey', ' Divya Sharma', 'Tanvi Arora'], 'answer': 2},
+      {q: "In which state has India's first transshipment port 'Vizhinjam' been inaugurated?", 'options': ['Tamilnadu', 'Maharashtra', 'Kerala', ' Andhra Pradesh'], 'answer': 2},
+      {q: ' Who has been recently appointed the Chairman of the Estimates Committee?', 'options': ['  Baijayant Panda', 'Abhishek Mishra', ' Sanjay Jaiswal', ' Nidhi Gupta'], 'answer': 2},
+      {q: '  Which position has been given to India in the recently released World Press Freedom Index 2025?', 'options': ['159 th', '151 th', '161 th', '150 th'], 'answer': 1},
+      {q: "Who among the following has been awarded the Best Male Player award by the All India Football Federation (AIFF) recently?", 'options': ['(a) Brison Fernandes', '(b)Vishal Kaith', '(c)Subhasish Bose', '(d)Khalid Jamil'], 'answer': 2},
+      {q: "Who has launched the Gyan Post initiative to deliver educational books at affordable rates in India?", 'options': ['CBSE','Delhi University', 'India Post', 'Gita Press'], 'answer': 2},
+      {q: "India's first certified green municipal bond has been issued by which of the following?", 'options': ['New Delhi', 'Ghaziabad', ' Mumbai', 'Amravati'], 'answer': 1},
+    ];
+
+
+    let current=0, score=0;
+    const quizEl=document.getElementById('quiz');
+    const resultEl=document.getElementById('result');
+    const timerEl=document.getElementById('timer');
+    const statusEl=document.getElementById('status');
+    const navEl=document.getElementById('nav');
+    const modeBtn=document.getElementById('modeBtn');
+    const submitBtn=document.getElementById('submitBtn');
+    const quizCard=document.getElementById('quizCard');
+    let answers=Array(questions.length).fill(null);
+
+    function showQuestion(i=current){
+      current=i;
+      resultEl.textContent='';
+      const q=questions[current];
+      quizEl.innerHTML=`<div class='question'>Q${current+1}. ${q.q}</div>`;
+      const opts=document.createElement('div'); opts.className='options';
+      q.options.forEach((opt,idx)=>{
+        const b=document.createElement('div'); b.className='opt'; b.textContent=opt;
+        if(answers[current]!==null){
+          if(idx===q.answer) b.classList.add('correct');
+          if(idx===answers[current] && answers[current]!==q.answer) b.classList.add('wrong');
+        }
+        b.onclick=()=>selectOption(idx);
+        opts.appendChild(b);
+      });
+      quizEl.appendChild(opts);
+      updateNav();
+      updateStatus();
+      quizCard.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+
+    function selectOption(i){
+      answers[current]=i;
+      const opts=document.querySelectorAll('.opt');
+        opts.forEach((el,idx)=>{
+          el.classList.remove('selected');
+          if(idx===i)
+            el.classList.add('selected');
+        });
+      if(current<questions.length-1){
+        setTimeout(()=>showQuestion(current+1),300);
+      } else {
+        finishQuiz();
+      }
+      updateStatus();
+    }
+
+    function finishQuiz(){
+      score=answers.reduce((acc,a,i)=>acc+(a===questions[i].answer?1:0),0);
+      quizEl.innerHTML='';
+      resultEl.textContent=`You scored ${score} / ${questions.length}`;
+    }
+
+    function updateNav(){
+      navEl.innerHTML='';
+      questions.forEach((_,i)=>{
+        const btn=document.createElement('button');
+        btn.textContent=i+1;
+        if(i===current) btn.classList.add('active');
+        //if(answers[i]!==null) btn.style.opacity='0.7';
+        if(answers[i]!==null) btn.classList.add('answered');
+        btn.onclick=()=>showQuestion(i);
+        navEl.appendChild(btn);
+      });
+    }
+
+    function updateStatus(){
+      const answered=answers.filter(a=>a!==null).length;
+      const notAnswered=questions.length-answered;
+      statusEl.textContent=`Answered: ${answered} | Not: ${notAnswered}`;
+    }
+
+    //Timer
+    let seconds=0;
+    setInterval(()=>{
+      seconds++;
+      const m=Math.floor(seconds/60).toString().padStart(2,'0');
+      const s=(seconds%60).toString().padStart(2,'0');
+      timerEl.textContent=`Time: ${m}:${s}`;
+    },1000);
+
+    //Mode toggle
+    modeBtn.onclick=()=>{
+      document.body.classList.toggle('light');
+      if(document.body.classList.contains('light')){modeBtn.textContent='🌙 Night';}
+      else{modeBtn.textContent='☀️ Light';}
+    }
+
+    //Submit button
+    submitBtn.onclick=()=>{
+      finishQuiz();
+    }
+
+    showQuestion();
+  </script></body>
+</html>
