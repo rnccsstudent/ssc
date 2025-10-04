@@ -24,50 +24,37 @@
     .nav button{padding:6px;border-radius:6px;border:none;background:#1e293b;color:#e2e8f0;font-size:12px;cursor:pointer}
     body.light .nav button{background:#e2e8f0;color:#1e293b}
     .nav button.active{background:#06b6d4;color:#021028}
-    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:6px}
     .modeBtn{padding:6px 10px;font-size:12px;border-radius:8px;border:none;cursor:pointer;background:#1e293b;color:#e2e8f0}
     body.light .modeBtn{background:#e2e8f0;color:#1e293b}
     .notify{background:#fde68a;color:#92400e;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
     .notify button{background:none;border:none;font-size:16px;cursor:pointer;color:inherit}
-    .opt.selected{
-      background: #6b7280 !important;
-      color: #fff;
-    }
-    .nav button.answered {
-      background: #16a34a !important;
-      color: #fff !important;
-      opacity: 1 !important;
-    }
-    .btn:active{
-      background: linear-gradient(90deg,#f59e0b,#d97706) !important;
-      color: #fff !important;
-      transform: scale(0.98);
-    }
-    .home-icon {
-      position: absolute;
-      /* left: 10px; */
-      align-items: center;
-      top: 10px;
-      font-size: 22px;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-    }
+    .opt.selected{background:#6b7280!important;color:#fff}
+    .nav button.answered{background:#16a34a!important;color:#fff!important;opacity:1!important}
+    .btn:active{background:linear-gradient(90deg,#f59e0b,#d97706)!important;color:#fff!important;transform:scale(0.98)}
+    .home-icon{font-size:24px;text-decoration:none;color:white;cursor:pointer}
+    .pdf-icon{font-size:24px;text-decoration:none;color:#38bdf8;cursor:pointer}
+    #allAnswers{max-height:400px;overflow-y:auto;margin-top:10px;padding:10px;border-radius:10px;background:#071427}
+    body.light #allAnswers{background:#f1f5f9}
+    .answer-block{margin-bottom:12px;padding:8px;border-bottom:1px solid #1e293b}
+    .answer-block.correct{color:#16a34a}
+    .answer-block.wrong{color:#dc2626}
   </style>
 </head>
 <body>
   <div class="app">
     <div class="topbar">
       <a href="index.html" class="home-icon">🏠</a>
-      <h1>SSC CGL/CHSL Static GK from SSC Adda247 </h1>
+      <a href="https://drive.google.com/file/d/18TdXHO7yXilfU450cbFarhG36SZI9FvH/view?usp=drivesdk" class="pdf-icon" title="Answers PDF">📄</a>
+      <h1>SSC CGL/CHSL Static GK from SSC Adda247</h1>
       <button class="modeBtn" id="modeBtn">🌙 Night</button>
     </div>
+
     <div class="notify" id="notify">
-      <span>Developer Pranab Mahata, Modified Date: 04/10/2025</span>
-      <span>CA-Marathon-11sept-2025</span>
-      <span>Last Meter Reading: 695</span>
+      <span>Developer Pranab Mahata, Modified Date: 10/04/2025</span>
       <button onclick="this.parentElement.remove()">✖</button>
     </div>
+
     <div class="card" id="quizCard">
       <div class="timerbar">
         <div id="timer">Time: 00:00</div>
@@ -77,9 +64,12 @@
       <div class="nav" id="nav"></div>
       <button class="btn" id="submitBtn">Submit</button>
       <div class="result" id="result"></div>
+      <div id="allAnswers"></div>
     </div>
-  </div>  <script>
-    const questions = [
+  </div>  
+
+<script>
+  const questions = [
       {q: "Who among the following recently launched the 'Suposhit Gram Panchayat' campaign?", 'options': ['Amit Shah', 'Lalan Singh', 'Narendra Modi', 'Draupadi Murmu'], 'answer': 2},
       {q: 'The 18th Surya Kiran military exercise will be held between India and which country?', 'options': ['Maldives', 'Nepal', 'Srilanka', 'Bhutan'], 'answer': 1},
       {q: 'Which of the following states has declared Ratha Saptami as its state festival?', 'options': ['Odisha', ' Andhra Pradesh', 'Gujarat', 'Haryana'], 'answer': 1},
@@ -332,103 +322,120 @@
       {q: "Who among the following has been awarded the Best Male Player award by the All India Football Federation (AIFF) recently?", 'options': ['(a) Brison Fernandes', '(b)Vishal Kaith', '(c)Subhasish Bose', '(d)Khalid Jamil'], 'answer': 2},
       {q: "Who has launched the Gyan Post initiative to deliver educational books at affordable rates in India?", 'options': ['CBSE','Delhi University', 'India Post', 'Gita Press'], 'answer': 2},
       {q: "India's first certified green municipal bond has been issued by which of the following?", 'options': ['New Delhi', 'Ghaziabad', ' Mumbai', 'Amravati'], 'answer': 1},
-    ];
+  ];
 
+  let current=0, score=0;
+  const quizEl=document.getElementById('quiz');
+  const resultEl=document.getElementById('result');
+  const timerEl=document.getElementById('timer');
+  const statusEl=document.getElementById('status');
+  const navEl=document.getElementById('nav');
+  const modeBtn=document.getElementById('modeBtn');
+  const submitBtn=document.getElementById('submitBtn');
+  const quizCard=document.getElementById('quizCard');
+  const allAnswersEl=document.getElementById('allAnswers');
+  let answers=Array(questions.length).fill(null);
 
-    let current=0, score=0;
-    const quizEl=document.getElementById('quiz');
-    const resultEl=document.getElementById('result');
-    const timerEl=document.getElementById('timer');
-    const statusEl=document.getElementById('status');
-    const navEl=document.getElementById('nav');
-    const modeBtn=document.getElementById('modeBtn');
-    const submitBtn=document.getElementById('submitBtn');
-    const quizCard=document.getElementById('quizCard');
-    let answers=Array(questions.length).fill(null);
-
-    function showQuestion(i=current){
-      current=i;
-      resultEl.textContent='';
-      const q=questions[current];
-      quizEl.innerHTML=`<div class='question'>Q${current+1}. ${q.q}</div>`;
-      const opts=document.createElement('div'); opts.className='options';
-      q.options.forEach((opt,idx)=>{
-        const b=document.createElement('div'); b.className='opt'; b.textContent=opt;
-        if(answers[current]!==null){
-          if(idx===q.answer) b.classList.add('correct');
-          if(idx===answers[current] && answers[current]!==q.answer) b.classList.add('wrong');
-        }
-        b.onclick=()=>selectOption(idx);
-        opts.appendChild(b);
-      });
-      quizEl.appendChild(opts);
-      updateNav();
-      updateStatus();
-      quizCard.scrollIntoView({behavior:"smooth", block:"start"});
-    }
-
-    function selectOption(i){
-      answers[current]=i;
-      const opts=document.querySelectorAll('.opt');
-        opts.forEach((el,idx)=>{
-          el.classList.remove('selected');
-          if(idx===i)
-            el.classList.add('selected');
-        });
-      if(current<questions.length-1){
-        setTimeout(()=>showQuestion(current+1),300);
-      } else {
-        finishQuiz();
+  function showQuestion(i=current){
+    current=i;
+    resultEl.textContent='';
+    allAnswersEl.innerHTML='';
+    const q=questions[current];
+    quizEl.innerHTML=`<div class='question'>Q${current+1}. ${q.q}</div>`;
+    const opts=document.createElement('div'); opts.className='options';
+    q.options.forEach((opt,idx)=>{
+      const b=document.createElement('div'); b.className='opt'; b.textContent=opt;
+      if(answers[current]!==null){
+        if(idx===q.answer) b.classList.add('correct');
+        if(idx===answers[current] && answers[current]!==q.answer) b.classList.add('wrong');
       }
-      updateStatus();
-    }
+      b.onclick=()=>selectOption(idx);
+      opts.appendChild(b);
+    });
+    quizEl.appendChild(opts);
+    updateNav();
+    updateStatus();
+    quizCard.scrollIntoView({behavior:"smooth", block:"start"});
+  }
 
-    function finishQuiz(){
-      score=answers.reduce((acc,a,i)=>acc+(a===questions[i].answer?1:0),0);
-      quizEl.innerHTML='';
-      resultEl.textContent=`You scored ${score} / ${questions.length}`;
-    }
-
-    function updateNav(){
-      navEl.innerHTML='';
-      questions.forEach((_,i)=>{
-        const btn=document.createElement('button');
-        btn.textContent=i+1;
-        if(i===current) btn.classList.add('active');
-        //if(answers[i]!==null) btn.style.opacity='0.7';
-        if(answers[i]!==null) btn.classList.add('answered');
-        btn.onclick=()=>showQuestion(i);
-        navEl.appendChild(btn);
-      });
-    }
-
-    function updateStatus(){
-      const answered=answers.filter(a=>a!==null).length;
-      const notAnswered=questions.length-answered;
-      statusEl.textContent=`Answered: ${answered} | Not: ${notAnswered}`;
-    }
-
-    //Timer
-    let seconds=0;
-    setInterval(()=>{
-      seconds++;
-      const m=Math.floor(seconds/60).toString().padStart(2,'0');
-      const s=(seconds%60).toString().padStart(2,'0');
-      timerEl.textContent=`Time: ${m}:${s}`;
-    },1000);
-
-    //Mode toggle
-    modeBtn.onclick=()=>{
-      document.body.classList.toggle('light');
-      if(document.body.classList.contains('light')){modeBtn.textContent='🌙 Night';}
-      else{modeBtn.textContent='☀️ Light';}
-    }
-
-    //Submit button
-    submitBtn.onclick=()=>{
+  function selectOption(i){
+    answers[current]=i;
+    const opts=document.querySelectorAll('.opt');
+    opts.forEach((el,idx)=>{
+      el.classList.remove('selected');
+      if(idx===i) el.classList.add('selected');
+    });
+    if(current<questions.length-1){
+      setTimeout(()=>showQuestion(current+1),300);
+    } else {
       finishQuiz();
     }
+    updateStatus();
+  }
 
-    showQuestion();
-  </script></body>
+  function finishQuiz(){
+    score=answers.reduce((acc,a,i)=>{
+      if(a===null) return acc;
+      if(a===questions[i].answer) return acc+1;
+      return acc-(1/3);
+    },0);
+
+    quizEl.innerHTML='';
+    resultEl.innerHTML=`You scored <b>${score.toFixed(2)}</b> / ${questions.length}<br>
+    <small>(+1 correct, -⅓ wrong, 0 not attempted)</small>`;
+
+    allAnswersEl.innerHTML = "";
+    questions.forEach((q, i) => {
+      const userAns = answers[i];
+      const div = document.createElement("div");
+      div.className = "answer-block " + (userAns === q.answer ? "correct" : "wrong");
+      div.innerHTML = `
+        <b>Q${i+1}:</b> ${q.q}<br>
+        ✅ Correct: ${q.options[q.answer]}<br>
+        ${userAns !== null ? `🧠 Your Answer: ${q.options[userAns]}` : "⏳ Not Attempted"}
+      `;
+      allAnswersEl.appendChild(div);
+    });
+  }
+
+  function updateNav(){
+    navEl.innerHTML='';
+    questions.forEach((_,i)=>{
+      const btn=document.createElement('button');
+      btn.textContent=i+1;
+      if(i===current) btn.classList.add('active');
+      if(answers[i]!==null) btn.classList.add('answered');
+      btn.onclick=()=>showQuestion(i);
+      navEl.appendChild(btn);
+    });
+  }
+
+  function updateStatus(){
+    const answered=answers.filter(a=>a!==null).length;
+    const notAnswered=questions.length-answered;
+    statusEl.textContent=`Answered: ${answered} | Not: ${notAnswered}`;
+  }
+
+  // Timer
+  let seconds=0;
+  setInterval(()=>{
+    seconds++;
+    const m=Math.floor(seconds/60).toString().padStart(2,'0');
+    const s=(seconds%60).toString().padStart(2,'0');
+    timerEl.textContent=`Time: ${m}:${s}`;
+  },1000);
+
+  // Mode toggle
+  modeBtn.onclick=()=>{
+    document.body.classList.toggle('light');
+    modeBtn.textContent = document.body.classList.contains('light') ? '🌙 Night' : '☀️ Light';
+  }
+
+  // Submit button
+  submitBtn.onclick=()=>finishQuiz();
+
+  showQuestion();
+</script>
+
+</body>
 </html>
