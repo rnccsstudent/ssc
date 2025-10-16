@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSC Preparation Hub</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #0f1724;
+    color: #e6eef6;
+    transition: background 0.3s, color 0.3s;
+  }
+  body.light { background: #f8fafc; color: #0f1724; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e293b;
+    color: white;
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  header h1 { font-size: 18px; margin: 0; }
+  .menu-btn {
+    font-size: 26px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+  }
+  .mode-btn {
+    background: #334155;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* Sidebar menu */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 240px;
+    background: #0b1220;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding-top: 60px;
+    z-index: 1001;
+  }
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 12px 24px;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 16px;
+    border-bottom: 1px solid #1e293b;
+  }
+  .sidebar a:hover { background: #1e293b; color: #38bdf8; }
+
+  .sidebar .closebtn {
+    position: absolute;
+    top: 10px; right: 16px;
+    font-size: 30px;
+    cursor: pointer;
+  }
+
+  /* Search bar inside sidebar */
+  .search-container {
+    padding: 0 20px 10px 20px;
+  }
+  .search-container input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+  .search-container input::placeholder {
+    color: #94a3b8;
+  }
+
+  main {
+    padding: 16px;
+    max-width: 800px;
+    margin: auto;
+  }
+  .card {
+    background: #0b1220;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(3,7,18,0.6);
+    margin-bottom: 14px;
+  }
+  body.light .card { background: white; color: #0f1724; }
+
+  .quiz-link {
+    display: block;
+    background: linear-gradient(90deg,#06b6d4,#3b82f6);
+    color: #021028;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 8px 0;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .quiz-link:active {
+    transform: scale(0.98);
+    background: linear-gradient(90deg,#f59e0b,#d97706);
+    color: #fff;
+  }
+  .external-link {
+      display: inline-block;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
+      color: #021028;
+      padding: 12px 16px;
+      margin-top: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    .external-link:hover {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      color: white;
+    }
+  footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  /* Overlay for outside click */
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+  }
+  .overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Progress Tracker */
+  .progress-bar {
+    background: #1e293b;
+    border-radius: 8px;
+    height: 20px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .progress {
+    background: linear-gradient(90deg, #38bdf8, #3b82f6);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s;
+  }
+</style>
+</head>
+<body>
+
+<div id="overlay" class="overlay"></div>
+
+<div id="mySidebar" class="sidebar">
+  <span class="closebtn" onclick="closeNav()">×</span>
+  <div class="search-container">
+    <input type="text" id="navSearch" placeholder="🔍 Search...">
+  </div>
+
+  <a href="index.html">🏠 Home</a>
+  <a href="cgl.html">🧠 SSC CGL Quiz</a>
+  <a href="#">📘 SSC CHSL Quiz</a>
+  <a href="chsl.html">📘 SSC CHSL Previous Year Question Paper</a>
+  <a href="general.html">🌍 General Awareness</a>
+  <a href="science.html">🔬 Science Quiz</a>
+  <a href="history.html">🏛️ History Quiz</a>
+  <a href="geography.html">🗺️ Geography Quiz</a>
+  <a href="polity.html">⚖️ Polity Quiz</a>
+  <a href="current.html">📰 Current Affairs</a>
+</div>
+
+<header>
+  <button class="menu-btn" onclick="openNav()">☰</button>
+  <h1>SSC Preparation Hub</h1>
+  <button class="mode-btn" id="modeBtn">🌙 Night</button>
+</header>
+
+<main>
+
+  <div class="card">
+    <h2>Access Previous Year Papers</h2>
+    <p>You can find SSC CHSL previous year question papers with solutions on Adda247:</p>
+    <a class="external-link" href="https://www.adda247.com/jobs/ssc-chsl-previous-year-question-paper/" target="_blank" rel="noopener noreferrer">
+      📄 View Papers on Adda247
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  Developed by <b>Pranab Mahata</b> • © 2025 SSC Prep Hub
+</footer>
+
+<script>
+const sidebar = document.getElementById("mySidebar");
+const overlay = document.getElementById("overlay");
+const modeBtn = document.getElementById("modeBtn");
+
+// Sidebar open & close
+function openNav() {
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
+}
+function closeNav() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
+overlay.addEventListener("click", closeNav);
+
+// Dark/Light mode toggle
+modeBtn.onclick = () => {
+  document.body.classList.toggle("light");
+  modeBtn.textContent = document.body.classList.contains("light") ? "🌙 Night" : "☀️ Light";
+};
+
+// Search inside sidebar
+document.getElementById("navSearch").addEventListener("input", function() {
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    if (link.textContent.toLowerCase().includes(filter) || link.classList.contains("closebtn")) {
+      link.style.display = "block";
+    } else {
+      link.style.display = "none";
+    }
+  });
+});
+
+// Local Storage + Progress Tracker
+const quizLinks = document.querySelectorAll(".quiz-link");
+const progressBar = document.getElementById("progress");
+const progressText = document.getElementById("progressText");
+
+let completed = JSON.parse(localStorage.getItem("completedQuizzes")) || [];
+
+quizLinks.forEach(link => {
+  const id = link.dataset.id;
+  if (completed.includes(id)) link.style.opacity = 0.6;
+  link.addEventListener("click", () => {
+    if (!completed.includes(id)) {
+      completed.push(id);
+      localStorage.setItem("completedQuizzes", JSON.stringify(completed));
+      updateProgress();
+      link.style.opacity = 0.6;
+    }
+  });
+});
+
+function updateProgress() {
+  const total = quizLinks.length;
+  const done = completed.length;
+  const percent = Math.round((done / total) * 100);
+  progressBar.style.width = percent + "%";
+  progressText.textContent = `${done} of ${total} quizzes completed (${percent}%)`;
+}
+updateProgress();
+</script>
+
+</body>
+</html>
